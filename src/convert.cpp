@@ -19,8 +19,7 @@ namespace PPAP
 		template <typename T, typename P> std::vector<P> convert(asdl_seq* seq)
 		{
 			std::vector<P> rtn;
-			if (!seq)
-				return rtn;
+			if (!seq) return rtn;
 			for (int i = 0; i < seq->size; i++)	rtn.push_back(convert((T)seq->elements[i]));
 			return rtn;
  	   }
