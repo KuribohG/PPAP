@@ -1,5 +1,8 @@
-#include <Python.h>
-#include <Python-ast.h>
+#include <math.h>
+#include "Python.h"
+#include "convert.hpp"
+#include "cpython-ast.h"
+#include "ast.hpp"
 
 static int RunModule(wchar_t *modname, int set_argv0)
 {
@@ -118,6 +121,7 @@ mod_ty Parse(wchar_t *fn) {
         Py_file_input, 0, 0, &cf, NULL, arena);
 
     fclose(fp);
+    return mod;
 }
 
 int main(int argc, char **argv) {
@@ -125,7 +129,7 @@ int main(int argc, char **argv) {
     int n = strlen(argv1);
     wchar_t *ws = new wchar_t[n+1];
     swprintf(ws, n+1, L"%hs", argv1);
-    Parse(ws);
+    PPAP::AST *root = PPAP::CpythonToPPAP(Parse(ws), argv1);
     delete [] ws;
     return 0;
 }
