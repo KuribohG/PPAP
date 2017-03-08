@@ -9,7 +9,7 @@
 
 namespace PPAP
 {
-	AST *CpythonToPPAP(mod_ty mod, std::string fn);
+	AST_mod *CpythonToPPAP(mod_ty mod, std::string fn);
 }
 
 #endif

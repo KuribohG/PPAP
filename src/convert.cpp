@@ -111,7 +111,7 @@ namespace PPAP
 
 		template <typename T, typename P> void convertAll(asdl_seq* seq, std::vector<P>& vec) { vec = convert<T, P>(seq); }
 
-		AST *convert(mod_ty mod)
+		AST_Module *convert(mod_ty mod)
 		{
 			if (mod->kind == Module_kind)
 			{
@@ -122,7 +122,7 @@ namespace PPAP
 			else return nullptr;
 		}
 	};
-	AST *CpythonToPPAP(mod_ty mod, std::string fn)
+	AST_mod *CpythonToPPAP(mod_ty mod, std::string fn)
 	{
 		Converter c(fn);
 		return c.convert(mod);
