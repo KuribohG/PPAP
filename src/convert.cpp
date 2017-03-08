@@ -22,7 +22,7 @@ namespace PPAP
 			if (!seq) return rtn;
 			for (int i = 0; i < seq->size; i++)	rtn.push_back(convert((T)seq->elements[i]));
 			return rtn;
- 	   }
+ 	    }
 
 		template <typename T, typename P> std::vector<P> convert(asdl_int_seq* seq)
 		{
@@ -37,25 +37,24 @@ namespace PPAP
 			switch (expr->kind)
 			{
 			case BinOp_kind:
-			{
-				auto r = new AST_BinOp();
-				auto v = expr->v.BinOp;
-				r->left = convert(v.left);
-				r->op_type = convert(v.op);
-				r->right = convert(v.right);
-				return r;
-			}
+			    {
+			    	auto r = new AST_BinOp();
+			    	auto v = expr->v.BinOp;
+			    	r->left = convert(v.left);
+			    	r->op = convert(v.op);
+			    	r->right = convert(v.right);
+			    	return r;
+			    }
 			case Num_kind:
-			{
-				PyObject *o = expr->v.Num.n;
-				if (o->ob_type == &PyFloat_Type)
-				{
-					auto r = new AST_Num();
-					r->num_type = AST_Num::FLOAT;
-					r->n_float = PyFloat_AsDouble(o);
-					return r;
-				}
-			}
+			    {
+			    	PyObject *o = expr->v.Num.n;
+			    	if (o->ob_type == &PyFloat_Type)
+			    	{
+			    		auto r = new AST_Float();
+			    		r->n = PyFloat_AsDouble(o);
+			    		return r;
+			    	}
+			    }
 			}
 		}
 
@@ -73,20 +72,20 @@ namespace PPAP
 			switch (stmt->kind)
 			{
 			case Assign_kind:
-			{
-				auto r = new AST_Assign();
-				auto v = stmt->v.Assign;
-				r->targets = convert<expr_ty, AST_expr*>(v.targets);
-				r->value = convert(v.value);
-				return r;
-			}
+			    {
+			    	auto r = new AST_Assign();
+			    	auto v = stmt->v.Assign;
+			    	r->targets = convert<expr_ty, AST_expr*>(v.targets);
+			    	r->value = convert(v.value);
+			    	return r;
+			    }
 			case Expr_kind:
-			{
-				auto r = new AST_Expr();
-				auto v = stmt->v.Expr;
-				r->value = convert(v.value);
-				return r;
-			}
+			    {
+			    	auto r = new AST_Expr();
+			    	auto v = stmt->v.Expr;
+			    	r->value = convert(v.value);
+			    	return r;
+			    }
 			}
 			return nullptr;
 		}
@@ -102,7 +101,7 @@ namespace PPAP
 
 		#define CASE(N) case N: return AST_TYPE::N
 
-		AST_TYPE::AST_TYPE convert(operator_ty op)
+		AST_TYPE::Operator_type convert(operator_ty op)
 		{
 			switch (op)
 			{
@@ -117,7 +116,6 @@ namespace PPAP
 			if (mod->kind == Module_kind)
 			{
 				AST_Module *rtn = new AST_Module();
-				rtn->lineno = 1;
 				convertAll<stmt_ty>(mod->v.Module.body, rtn->body);
 				return rtn;
 			}
