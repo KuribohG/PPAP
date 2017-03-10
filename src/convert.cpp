@@ -32,6 +32,12 @@ namespace PPAP
 			return rtn;
 		}
 
+		std::string convert(identifier ident)
+		{
+			if (!ident) return "";
+			else return std::string(PyUnicode_AS_DATA(ident));
+		}
+
 		AST_expr* _convert(expr_ty expr)
 		{
 			switch (expr->kind)
@@ -54,7 +60,20 @@ namespace PPAP
 			    		r->n = PyFloat_AsDouble(o);
 			    		return r;
 			    	}
+					else if (o->ob_type == &PyLong_Type)
+					{
+						auto r = new AST_Int();
+						auto s = _PyLong_Format(o, 10);
+						r->n = PyUnicode_AS_DATA(s);
+						return r;
+					}
 			    }
+			case Name_kind:
+				{
+					auto v = expr->v.Name;
+					auto r = new AST_Name(convert(v.id), convert(v.ctx));
+					return r;
+				}
 			}
 		}
 
@@ -100,6 +119,18 @@ namespace PPAP
 		}
 
 		#define CASE(N) case N: return AST_TYPE::N
+
+		AST_TYPE::Expr_context_type convert(expr_context_ty context)
+		{
+			switch(context)
+			{
+				CASE(Load);
+				CASE(Store);
+				CASE(Del);
+				CASE(AugLoad);
+				CASE(AugStore);
+			}
+		}
 
 		AST_TYPE::Operator_type convert(operator_ty op)
 		{
