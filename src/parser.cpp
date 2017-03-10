@@ -1,5 +1,4 @@
 #include <math.h>
-#include <iostream>
 #include "Python.h"
 #include "convert.hpp"
 #include "cpython-ast.h"
@@ -130,8 +129,7 @@ int main(int argc, char **argv) {
     int n = strlen(argv1);
     wchar_t *ws = new wchar_t[n+1];
     swprintf(ws, n+1, L"%hs", argv1);
-    PPAP::AST_mod *root = PPAP::CpythonToPPAP(Parse(ws), argv1);
-    root->visit(std::cout, 0);
+    PPAP::AST *root = PPAP::CpythonToPPAP(Parse(ws), argv1);
     delete [] ws;
     return 0;
 }
