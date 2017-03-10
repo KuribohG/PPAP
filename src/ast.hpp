@@ -1,8 +1,22 @@
 #ifndef PPAP_AST_H
 #define PPAP_AST_H
 
+#include "llvm/ADT/APFloat.h"
+#include "llvm/ADT/STLExtras.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/DerivedTypes.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/Type.h"
+#include "llvm/IR/Verifier.h"
+
 #include <string>
 #include <vector>
+
+using namespace llvm;
 
 namespace PPAP
 {
@@ -83,6 +97,7 @@ namespace PPAP
         int col_offset;
 		AST_expr(AST_TYPE::Expr_type type, int lineno = 0, int col_offset = 0)
                 : type(type), lineno(lineno), col_offset(col_offset) { }
+        virtual Value *codegen() = 0;
 	};
 
 	class AST_stmt: public AST
@@ -117,6 +132,7 @@ namespace PPAP
 		AST_TYPE::Operator_type op;
 		AST_expr *left, *right;
 		AST_BinOp(): AST_expr(AST_TYPE::BinOp) { }
+        virtual Value *codegen() override;
 	};
 
 	class AST_Num: public AST_expr
@@ -131,6 +147,7 @@ namespace PPAP
     public:
         double n;
         AST_Float(): AST_Num(AST_TYPE::Float) { }
+        virtual Value *codegen() override;
     };
 
     class AST_Int: public AST_Num
