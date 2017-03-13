@@ -6,16 +6,27 @@
 using namespace llvm;
 using namespace PPAP;
 
-LLVMContext TheContext;
-IRBuilder<> Builder(TheContext);
+extern LLVMContext TheContext;
+extern IRBuilder<> Builder;
 
 Value *AST_BinOp::codegen() {
     Value *L = left->codegen();
     Value *R = right->codegen();
     switch (op) {
+        //TODO: more operator and integer supporting
         case AST_TYPE::Add:
             return Builder.CreateFAdd(L, R, "addtmp");
     }
+}
+
+Value *AST_Int::codegen() {
+	//TODO: Int IR generate
+	return nullptr;
+}
+
+Value *AST_Name::codegen() {
+	//TODO: Name IR generate
+	return nullptr;
 }
 
 Value *AST_Float::codegen() {

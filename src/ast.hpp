@@ -100,7 +100,7 @@ namespace PPAP
 		AST_expr(AST_TYPE::Expr_type type, int lineno = 0, int col_offset = 0)
                 : type(type), lineno(lineno), col_offset(col_offset) { }
         virtual Value *codegen() = 0;
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
 	class AST_stmt: public AST
@@ -111,7 +111,7 @@ namespace PPAP
         int col_offset;
 		AST_stmt(AST_TYPE::Stmt_type type, int lineno = 0, int col_offset = 0)
                 : type(type), lineno(lineno), col_offset(col_offset) { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
 	class AST_Expr: public AST_stmt
@@ -120,7 +120,7 @@ namespace PPAP
 		AST_expr* value;
 		AST_Expr(): AST_stmt(AST_TYPE::Expr) { }
 		AST_Expr(AST_expr *value): AST_stmt(AST_TYPE::Expr), value(value) { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
 	class AST_Assign: public AST_stmt
@@ -129,7 +129,7 @@ namespace PPAP
 		std::vector<AST_expr*> targets;
 		AST_expr* value;
 		AST_Assign(): AST_stmt(AST_TYPE::Assign) { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
 	class AST_BinOp: public AST_expr
@@ -139,7 +139,7 @@ namespace PPAP
 		AST_expr *left, *right;
 		AST_BinOp(): AST_expr(AST_TYPE::BinOp) { }
         virtual Value *codegen() override;
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
 	class AST_Num: public AST_expr
@@ -147,7 +147,7 @@ namespace PPAP
 	public:
         AST_TYPE::Num_type num_type;
 		AST_Num(AST_TYPE::Num_type num_type): AST_expr(AST_TYPE::Num), num_type(num_type) { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
 	class AST_Name: public AST_expr
@@ -156,7 +156,8 @@ namespace PPAP
 		std::string id;
 		AST_TYPE::Expr_context_type ctx;
 		AST_Name(std::string id, AST_TYPE::Expr_context_type ctx): AST_expr(AST_TYPE::Name), id(id), ctx(ctx) { }
-		virtual void visit(std::ostream &o, int dep);
+        virtual Value *codegen() override;
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 
     class AST_Float: public AST_Num
@@ -165,7 +166,7 @@ namespace PPAP
         double n;
         AST_Float(): AST_Num(AST_TYPE::Float) { }
         virtual Value *codegen() override;
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
     };
 
     class AST_Int: public AST_Num
@@ -173,7 +174,8 @@ namespace PPAP
     public:
         std::string n;
         AST_Int(): AST_Num(AST_TYPE::Int) { }
-		virtual void visit(std::ostream &o, int dep);
+        virtual Value *codegen() override;
+		virtual void visit(std::ostream &o, int dep) override;
     };
 
     class AST_mod: public AST
@@ -181,7 +183,7 @@ namespace PPAP
     public:
         AST_TYPE::Mod_type type;
         AST_mod(AST_TYPE::Mod_type type): type(type) { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
     };
 
 	class AST_Module: public AST_mod
@@ -189,7 +191,7 @@ namespace PPAP
 	public:
 		std::vector<AST_stmt *> body;
 		AST_Module(): AST_mod(AST_TYPE::Module) { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) override;
 	};
 }
 #endif

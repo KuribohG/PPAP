@@ -1,5 +1,6 @@
 #include <math.h>
 #include <iostream>
+#include <memory>
 #include "Python.h"
 #include "convert.hpp"
 #include "cpython-ast.h"
@@ -125,13 +126,19 @@ mod_ty Parse(wchar_t *fn) {
     return mod;
 }
 
+LLVMContext TheContext;
+IRBuilder<> Builder(TheContext);
+std::unique_ptr<Module> TheModule;
+
 int main(int argc, char **argv) {
     const char* argv1 = "source.py";
     int n = strlen(argv1);
     wchar_t *ws = new wchar_t[n+1];
     swprintf(ws, n+1, L"%hs", argv1);
+    TheModule = std::make_unique<Module>("PPAP", TheContext);
     PPAP::AST_mod *root = PPAP::CpythonToPPAP(Parse(ws), argv1);
-    root->visit(std::cout, 0);
+    TheModule->print(errs(), nullptr);
+    //root->visit(std::cout, 0);
     delete [] ws;
     return 0;
 }
