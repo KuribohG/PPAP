@@ -88,7 +88,7 @@ namespace PPAP
 	{
 	public:
 		virtual ~AST() { }
-		virtual void visit(std::ostream &o, int dep);
+		virtual void visit(std::ostream &o, int dep) = 0;
 	};
 
 	class AST_expr: public AST
@@ -100,7 +100,7 @@ namespace PPAP
 		AST_expr(AST_TYPE::Expr_type type, int lineno = 0, int col_offset = 0)
                 : type(type), lineno(lineno), col_offset(col_offset) { }
         virtual Value *codegen() = 0;
-		virtual void visit(std::ostream &o, int dep) override;
+		virtual void visit(std::ostream &o, int dep) override = 0;
 	};
 
 	class AST_stmt: public AST
@@ -111,7 +111,7 @@ namespace PPAP
         int col_offset;
 		AST_stmt(AST_TYPE::Stmt_type type, int lineno = 0, int col_offset = 0)
                 : type(type), lineno(lineno), col_offset(col_offset) { }
-		virtual void visit(std::ostream &o, int dep) override;
+		virtual void visit(std::ostream &o, int dep) override = 0;
 	};
 
 	class AST_Expr: public AST_stmt

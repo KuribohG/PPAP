@@ -38,12 +38,6 @@ inline std::ostream &visit_indent(std::ostream &o, int dep) {
 	return o;
 }
 
-inline void AST::visit(std::ostream &o, int dep) { }
-
-inline void AST_expr::visit(std::ostream &o, int dep) { }
-
-inline void AST_stmt::visit(std::ostream &o, int dep) { }
-
 inline void AST_Expr::visit(std::ostream &o, int dep) {
 	visit_indent(o, dep) << "Expr:" << std::endl;
 	visit_indent(o, dep) << "|-#value" << std::endl;
